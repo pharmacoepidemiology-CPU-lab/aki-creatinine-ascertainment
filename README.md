@@ -14,7 +14,7 @@ Acute kidney injury (AKI) is defined by a rise in serum creatinine from a baseli
 
 All analysis code is in R.
 
-**Repository:** https://github.com/bongani4-ux/aki-creatinine-ascertainment
+**Repository:** https://github.com/pharmacoepidemiology-CPU-lab/aki-creatinine-ascertainment
 
 ---
 
