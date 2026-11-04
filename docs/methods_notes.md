@@ -85,4 +85,4 @@ at a time to measure their effect. `results/` has not yet been regenerated: re-r
 
 1. **Zigong times are hours, not days** (see `extraction/README.md`).
 2. **INSPIRE t0** was midnight of the operation date; it is now the operation start.
-3. **HiRID** rows were repeated 2-5 times per draw.
+3. **HiRID** rows were repeated 2-5 times per draw in the source observation tables.

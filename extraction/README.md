@@ -41,8 +41,9 @@ median, exact duplicates removed; ZD contained 2,350 duplicate rows).
   joined on INP_NO, which dtOutCome does not carry), so no deaths were recorded.
 - **INSPIRE** `opdate` is midnight of the operation day. Using it as t0 placed 9,915
   same-day pre-operative results after t0; t0 is now `opstart_time`.
-- **HiRID** the published export repeated each draw 2-5 times (same second and value);
-  the script and the pipeline now keep one row per draw.
+- **HiRID** the observation tables themselves repeat many draws 2-5 times (same second and
+  value; 114,181 of 190,527 rows for variableid 20000600). The script and the pipeline now
+  keep one row per draw.
 - **VitalDB** creatinine is `name == "cr"` in `lab_data.csv`, already in mg/dL.
 - **eICU-CRD** times are minutes from ICU admission (t0 = 0 for every stay). Results can be
   aligned only within one hospitalisation (`patienthealthsystemstayid`), so there is no
