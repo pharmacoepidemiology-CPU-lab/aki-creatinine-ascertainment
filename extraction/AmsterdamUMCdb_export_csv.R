@@ -184,7 +184,7 @@ COPY (
     'AmsterdamUMCdb' AS source,
     CAST(ep.admissionid AS VARCHAR) AS episode_id,
     CAST(ep.patientid AS VARCHAR) AS patient_id,
-    cr.measuredat AS "timestamp",
+    cr.measuredat AS \"timestamp\",
     round(CAST(cr.measuredat - ep.admittedat AS DOUBLE) / %1$s, 5) AS t_days,
     cr.creatinine_umol_l / %2$s AS value,
     'mg/dL' AS unit,
