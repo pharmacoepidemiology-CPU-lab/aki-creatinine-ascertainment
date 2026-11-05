@@ -35,6 +35,9 @@ suppressPackageStartupMessages({
 AMDS_DIR <- "path/to/AmsterdamUMCdb"
 # 2. Folder where the two output files will be written
 OUT_DIR  <- "path/to/amsterdam_output"
+# Optional: if numericitems.csv is in a different folder from admissions.csv,
+# give its full path here; otherwise leave it as "".
+NUMERICITEMS_FILE <- ""
 # ================================================================
 
 LOOKBACK_DAYS <- 365L
@@ -51,7 +54,10 @@ find_file <- function(stem) {
   normalizePath(hit[1], winslash = "/")
 }
 adm_file <- find_file("admissions")
-num_file <- find_file("numericitems")
+num_file <- if (nzchar(NUMERICITEMS_FILE)) {
+  if (!file.exists(NUMERICITEMS_FILE)) stop("NUMERICITEMS_FILE not found: ", NUMERICITEMS_FILE)
+  normalizePath(NUMERICITEMS_FILE, winslash = "/")
+} else find_file("numericitems")
 
 dir.create(OUT_DIR, recursive = TRUE, showWarnings = FALSE)
 series_path   <- normalizePath(file.path(OUT_DIR, "AmsterdamUMCdb_creatinine_series.csv"), winslash = "/", mustWork = FALSE)
@@ -95,7 +101,8 @@ creat_sql <- function(src) sprintf("
     SELECT TRY_CAST(admissionid AS BIGINT) AS admissionid,
            TRY_CAST(itemid AS BIGINT)      AS itemid,
            TRY_CAST(value AS DOUBLE)       AS value,
-           CAST(unit AS VARCHAR)           AS unit,
+           -- a UTF-8 file read as Latin-1 shows the micro sign as two characters; repair it
+           replace(CAST(unit AS VARCHAR), chr(194) || chr(181), chr(181)) AS unit,
            TRY_CAST(measuredat AS BIGINT)  AS measuredat
     FROM %s
   ) n
