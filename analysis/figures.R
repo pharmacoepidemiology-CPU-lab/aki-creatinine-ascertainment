@@ -88,7 +88,8 @@ p3 <- ggplot(long, aes(db, value, fill = variable)) + geom_col(width = .72) +
             inherit.aes = FALSE, size = 2.3, fontface = "bold", colour = "#1f3d55") +
   annotate("text", x = .4, y = 110, label = "consensus-compliant %:", hjust = 0, size = 2.2,
            fontface = "bold", colour = "#1f3d55") +
-  scale_fill_manual(values = tc, breaks = tl) + scale_y_continuous(limits = c(0, 112), expand = c(0, 0)) +
+  # unname(): ggplot2 >= 3.5 uses the names of a named `breaks` vector as legend labels
+  scale_fill_manual(values = tc, breaks = unname(tl)) + scale_y_continuous(limits = c(0, 112), expand = c(0, 0)) +
   labs(x = NULL, y = "Percentage of patients") + theme_pub() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1), panel.grid.major.x = element_blank(),
         panel.grid.major.y = element_line(colour = "grey88", linewidth = .3), legend.position = "bottom") +
@@ -103,7 +104,8 @@ p4a <- ggplot(d, aes(y = db)) +
   geom_point(aes(x = aki_hier, colour = setting), size = 1.9) +
   geom_text(aes(x = pmax(aki_hier, aki_t0) + 1.4, label = sprintf("%+.1f", aki_hier - aki_t0)),
             hjust = 0, size = 2.2, colour = "grey30") +
-  scale_colour_manual(values = COL, guide = "none") + scale_x_continuous(limits = c(0, 52), expand = c(0, 0)) +
+  scale_colour_manual(values = COL, guide = "none") +
+  scale_x_continuous(limits = c(0, max(52, ceiling(max(d$aki_hier, d$aki_t0)) + 10)), expand = c(0, 0)) +
   labs(x = "AKI incidence in the same patients (%)", y = NULL, title = "(A) Effect of baseline choice",
        caption = "Filled: hierarchy baseline   Open: proximal (tier 0) baseline") +
   theme_pub() + theme(plot.caption = element_text(size = 6, hjust = 1))
@@ -114,7 +116,9 @@ p4b <- ggplot(mm, aes(value, db, fill = variable)) +
   geom_col(position = position_dodge2(reverse = TRUE, padding = .05), width = .78) +
   geom_text(data = d, aes(x = missed + .4, y = db, label = sprintf("%.1f", missed)), inherit.aes = FALSE,
             hjust = 0, size = 2.2, nudge_y = .19) +
-  scale_fill_manual(values = c("#8c2d2d", "#c9a227")) + scale_x_continuous(limits = c(0, 22), expand = c(0, 0)) +
+  # the axis must extend past the largest bar, or ggplot drops it (NWICU, 23.4%)
+  scale_fill_manual(values = c("#8c2d2d", "#c9a227")) +
+  scale_x_continuous(limits = c(0, max(22, 5 * ceiling((max(mm$value) + 3) / 5))), expand = c(0, 0)) +
   labs(x = "Patients misclassified (%)", y = NULL, title = "(B) Direction of misclassification") +
   theme_pub() + theme(legend.position = c(.66, .1))
 save_fig(p4a + p4b, "Figure4", h = 4.4)
@@ -158,7 +162,7 @@ seg[, `:=`(pct = 100 * value / n, db = factor(db, levels = sub$db),
 ps <- ggplot(seg, aes(pct, db, fill = variable)) + geom_col(width = .62) +
   geom_text(data = sub, aes(x = 101, y = factor(db, levels = sub$db), label = sprintf("%.1f%%", akd_elig)),
             inherit.aes = FALSE, hjust = 0, size = 2.3, fontface = "bold", colour = "#1f3d55") +
-  scale_fill_manual(values = fills, breaks = cats) +
+  scale_fill_manual(values = fills, breaks = unname(cats)) +
   scale_x_continuous(limits = c(0, 112), breaks = seq(0, 100, 20), expand = c(0, 0)) +
   labs(x = "Percentage of patients", y = NULL,
        caption = "Bold: AKD-evaluable among patients with a pre-index value who were alive at day 90") +
