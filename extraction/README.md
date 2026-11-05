@@ -16,7 +16,8 @@ can trigger spurious errors.
 | SICdb | `SICdb_export.R` | research team | as run |
 | Zigong | `Zigong_export.R` | core team | **corrected**: times are hours, not days (see below) |
 | PIC | `PIC_export.R` | core team | as run (reads the V1.1.0 folder) |
-| AmsterdamUMCdb | `AmsterdamUMCdb_export.R` | research team | as run |
+| AmsterdamUMCdb | `AmsterdamUMCdb_export.R` | research team | as run (needs the database loaded in PostgreSQL) |
+| AmsterdamUMCdb | `AmsterdamUMCdb_export_csv.R` | core team | same rules, reads the release CSV files directly with DuckDB; no PostgreSQL needed |
 | VitalDB | `VitalDB_export.R` | research team | rewritten to read the PhysioNet files; reproduces the published VitalDB results exactly |
 | eICU-CRD | `eICU-CRD_export.R` | research team | as run (episode and patient counts match the paper); output names standardised, `unitvisitnumber` / `hospitaldischargeyear` added |
 | MOVER (EPIC) | `MOVER_export.R` | research team | as run (episode and patient counts match the paper); comments translated, output names standardised, `t0_source` added |
@@ -54,9 +55,14 @@ median, exact duplicates removed; ZD contained 2,350 duplicate rows).
   (midnight of the operation day) for 5,174 operations (8%); `t0_source` records which.
   In-hospital death is timed at discharge. `BIRTH_DATE` holds age in years.
 - **PIC** ships two versions in one download. Read `V1.1.0/`; the root-level files are v1.0.0.
-- **AmsterdamUMCdb** reads connection settings from environment variables (`AMDS_HOST`,
-  `AMDS_PORT`, `AMDS_DB`, `AMDS_USER`). Set `PGPASSWORD` outside the script. Never write a
-  password into this file.
+- **AmsterdamUMCdb** has two equivalent scripts. `AmsterdamUMCdb_export.R` queries a
+  PostgreSQL copy of the database and reads connection settings from environment variables
+  (`AMDS_HOST`, `AMDS_PORT`, `AMDS_DB`, `AMDS_USER`); set `PGPASSWORD` outside the script and
+  never write a password into it. `AmsterdamUMCdb_export_csv.R` reads `admissions.csv` and
+  `numericitems.csv` from the release folder with DuckDB (duckdb >= 1.1, for the Latin-1
+  encoding); only the folder and output paths need editing. The single scan of
+  `numericitems.csv` takes 10-40 minutes. Reference counts: 23,106 episodes, 20,109
+  patients, 291,175 creatinine rows.
 - **NWICU** — derive in-hospital death from timestamps (death on or before discharge), not from
   `hospital_expire_flag`, which is coded differently from MIMIC-IV.
 
