@@ -10,7 +10,7 @@ RESULTS_DIR <- "results"
 
 # Remove exact duplicate results (same episode, same time, same value) before
 # counting. They are repeated records of one draw, not separate measurements
-# (60% of HiRID rows, 8.5% of INSPIRE, ~7% of SICdb and PIC in the exports).
+# (e.g. 8.5% of INSPIRE and 9.1% of NJF rows; HiRID's are removed in its export).
 DEDUPLICATE <- TRUE
 
 SOURCES <- data.frame(
