@@ -22,7 +22,9 @@ figures use time ordering. No conclusion changed.
 - **NWICU** `died_inhosp` is mis-mapped in the export (flags 118 patients, none of whom died
   before discharge). Death timestamps are correct (12.2% in-hospital mortality). The analysis
   uses timestamps throughout.
-- **ZD** contains 2,350 exact duplicate result rows (1.1%). They do not affect evaluability.
+- **ZD** The version 3 export (8 November 2026) replaces an earlier one that held creatinine
+  results for only 39.2% of analysed patients (median 0 per patient); in version 3, 86.0% have
+  at least one result. Exact duplicate rows (8,481, 1.4%) are removed before counting.
 - **PIC** An initial export returned a filtered subset of 7,488 ICU stays rather than 13,941,
   inflating apparent ascertainment by 30 percentage points. The full cohort is used. See
   Supplementary Item S4 of the paper.
@@ -43,7 +45,7 @@ figures use time ordering. No conclusion changed.
 - **Duplicates.** Rows with the same episode, t_days and value are one draw recorded more
   than once and are removed before counting (`DEDUPLICATE` in `config.R`). Among the
   patients analysed this removed 57,904 INSPIRE rows (8.5%), 42,421 NJF (9.1%), 12,360 SICdb
-  (7.4%), 10,680 AmsterdamUMCdb (5.6%), 3,603 PIC (7.1%) and fewer than 2,000 in each other
+  (7.4%), 10,680 AmsterdamUMCdb (5.6%), 8,481 ZD (1.4%), 3,603 PIC (7.1%) and fewer than 2,000 in each other
   source. HiRID's repeated rows (114,181) are now removed in its export script.
 - **Undefined vs unmeasured** (Tables S2-S3). Patients with no pre-index value cannot be
   evaluated whatever happens later, so they are a separate category; the death / discharge
@@ -86,7 +88,11 @@ committed `results/` exactly (every column, including the timing histograms) for
 NWICU, HiRID, Zigong, PIC, INSPIRE, VitalDB and SICdb. The fixes above were then applied one
 at a time to measure their effect. `results/` was regenerated with the corrected R pipeline
 on all fourteen sources on 5 November 2026, and every column agreed with the independent
-implementation for every source. Three extraction errors were also found:
+implementation for every source. On 11 November 2026 the NJF, ZD and AHMU rows of
+`results/` were replaced with results from the version 3 institutional exports (8 November
+2026; `extraction/institutional/`). Those rows were computed with the independent
+implementation, which had matched the R pipeline in every column for all fourteen sources;
+`tables.R`, `figures.R` and `graphical_abstract.R` read only `results/`. Three extraction errors were also found:
 
 1. **Zigong times are hours, not days** (see `extraction/README.md`).
 2. **INSPIRE t0** was midnight of the operation date; it is now the operation start.

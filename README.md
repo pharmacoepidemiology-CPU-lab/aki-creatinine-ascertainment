@@ -6,12 +6,14 @@ Bongani Mbambara, Ai Shuangfeng, Ma Yihan, Zhao Zhongxian, Zhang Jiwen, Hao Zhul
 
 Acute kidney injury (AKI) is defined by a rise in serum creatinine from a baseline, so a case can be found only in a patient who was measured, and only relative to whichever earlier value is chosen as the baseline. This repository extracts the complete creatinine series from fourteen critical care and perioperative data sources and quantifies how often and when creatinine is measured, where baseline values come from, and how much the choice of baseline changes who is called a case.
 
-**1,261,700 patients · 14 data sources · 6 countries**
+**1,293,348 patients · 14 data sources · 6 countries**
 
 > **Status (November 2026):** the code was corrected (see `docs/methods_notes.md`,
 > "Corrections") and `results/` was regenerated on all fourteen sources on 5 November 2026.
 > The regenerated results were checked against an independent implementation and agree
-> in every column for every source.
+> in every column for every source. On 11 November 2026 the NJF, ZD and AHMU rows were
+> updated from the version 3 institutional exports of 8 November 2026, which were produced
+> and checked on site (`extraction/institutional/`); see `docs/methods_notes.md`.
 
 All analysis code is in R.
 
