@@ -21,14 +21,23 @@ can trigger spurious errors.
 | VitalDB | `VitalDB_export.R` | research team | rewritten to read the PhysioNet files; reproduces the published VitalDB results exactly |
 | eICU-CRD | `eICU-CRD_export.R` | research team | as run (episode and patient counts match the paper); output names standardised, `unitvisitnumber` / `hospitaldischargeyear` added |
 | MOVER (EPIC) | `MOVER_export.R` | research team | as run (episode and patient counts match the paper); comments translated, output names standardised, `t0_source` added |
-| ZD, NJF, AHMU | — | hospital data teams | exported on site to `institutional/template_institutional_export.R`; extraction code not public (see below) |
+| ZD, NJF, AHMU | `institutional/run_extraction.R` (with `config.R`, `helpers.R`, `check_outputs.R`) | hospital data teams | v3, 8 November 2026, run on site; outputs in the common specification |
 
-`institutional/template_institutional_export.R` is the specification template given to
-the institutional data teams. The three institutional exports were produced inside each
-hospital's data environment; the code run there depends on each hospital's internal tables
-and is not published. Only the resulting files, in the common specification, entered the
-analysis, where they pass the same checks as every other source (mg/dL units, plausible
-median, exact duplicates removed; ZD contained 2,350 duplicate rows).
+`institutional/` holds the code the hospital data teams ran on site for the three
+institutional surgical cohorts (version 3, 8 November 2026; documented in Chinese in
+`institutional/README.txt`). `run_extraction.R --validate-only` checks the standardised
+source tables (01 demographics, 03 operations, 13 ward/ICU times, 09 laboratory);
+`run_extraction.R --export` writes the two files per hospital to a new folder;
+`check_outputs.R` rebuilds every covariate from source and checks every exported
+creatinine row. Operations are linked on PATIENT_ID, VISIT_ID and OPER_ID; t0 is the
+first valid of operation start, anaesthesia start and theatre entry; creatinine is
+serum only, 5 to 4,000 µmol/l, converted with 88.42. Version 3 corrects AHMU sex,
+operation scale and ASA text read with the wrong encoding, and records ICU admission as
+unknown (empty), not 0, when no valid ICU entry time exists. `apply_icu_unknown.R` was a
+one-off correction of the earlier files and does not need to be run again. Paths in
+`config.R` are those of the hospital machine and must be changed elsewhere. The template
+given to the data teams is kept as `institutional/template_institutional_export.R`.
+No patient data are included.
 
 ## Source-specific notes
 
